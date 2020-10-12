@@ -12,19 +12,20 @@ def generate():
     sigma_class_1 = [1, 2, 1]
     sigma = [sigma_class_0, sigma_class_1]
     N = 1000
-    col = len(mu0)
+    col = len(mu_class_0)
     #Получаем массив линейно разделимых данных
     X, Y, class0, class1 = dg.norm_dataset(mu, sigma, N)
 
     #col = 2
     #X, Y, class0, class1 = dg.nonlinear_dataset_4(1, N)
 
+    #Делим данные на test и train в пропорции 70/30
     trainCount = round(0.7 * N * 2)
     Xtrain = X[0:trainCount]
     Xtest = X[trainCount:N * 2 + 1]
     Ytrain = Y[0:trainCount]
     Ytest = Y[trainCount:N * 2 + 1]
-
+    #Построим гистограммы распределения классов по признакам
     for i in range(0, col):
         _ = plt.hist(class0[:, i], bins='auto', alpha=0.7)
         _ = plt.hist(class1[:, i], bins='auto', alpha=0.7)
@@ -33,7 +34,7 @@ def generate():
         plt.ylabel('count')
         plt.savefig('hist_f' + str(i + 1) + '.png')
         plt.clf()
-
+    #Построим скаттерограммы распределения признаков для первых двух признаков
     plt.scatter(class0[:, 0], class0[:, 1], marker=".", alpha=0.7)
     plt.scatter(class1[:, 0], class1[:, 1], marker=".", alpha=0.7)
     plt.title('Scatter features 1st and 2nd')
