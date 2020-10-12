@@ -4,17 +4,20 @@ import DataGenerator as dg
 
 
 def generate():
-    mu0 = [0, 2, 3]
-    mu1 = [3, 5, 1]
-    mu = [mu0, mu1]
-    sigma0 = [2, 1, 2]
-    sigma1 = [1, 2, 1]
-    sigma = [sigma0, sigma1]
+    #Задаем исходные данные для линейного распределения
+    mu_class_0 = [0, 2, 3]
+    mu_class_1 = [3, 5, 1]
+    mu = [mu_class_0, mu_class_1]
+    sigma_class_0 = [2, 1, 2]
+    sigma_class_1 = [1, 2, 1]
+    sigma = [sigma_class_0, sigma_class_1]
     N = 1000
-    #col = len(mu0)
-    col = 2
-    #X, Y, class0, class1 = dg.norm_dataset(mu, sigma, N)
-    X, Y, class0, class1 = dg.nonlinear_dataset_4(1, N)
+    col = len(mu0)
+    #Получаем массив линейно разделимых данных
+    X, Y, class0, class1 = dg.norm_dataset(mu, sigma, N)
+
+    #col = 2
+    #X, Y, class0, class1 = dg.nonlinear_dataset_4(1, N)
 
     trainCount = round(0.7 * N * 2)
     Xtrain = X[0:trainCount]
