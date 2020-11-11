@@ -3,7 +3,33 @@ from sklearn.linear_model import LogisticRegression
 import DataGenerator as dg
 import matplotlib.pyplot as plt
 
+#
+#Функция оценки результатов работы Logit
+def evaluate(name, pYproba, pY, Y):
+    #Определяем точность, чувствительность, специфичность
+    TP = sum(pY & Y)
+    TN = sum(~pY & ~Y)
+    FP = sum(pY & ~Y)
+    FN = sum(~pY & Y)
 
+    ACC = (TP + TN) / (TP + TN + FP + FN)
+    SENS = TP / (TP + FN)
+    SPEC = TN / (TN + FP)
+
+    print(name)
+    print("Object amount: " + str(len(Y)))
+    print("ACC: " + str(ACC))
+    print("SENS: " + str(SENS))
+    print("SPEC: " + str(SPEC))
+
+    #Строим гистограмму распределения вероятности по классам
+    _ = plt.hist(pYproba[Y, 1], bins='auto', alpha=0.7)
+    _ = plt.hist(pYproba[~Y, 1], bins='auto', alpha=0.7)
+    plt.title('Histogram ' + name + ' case')
+    plt.xlabel('probability')
+    plt.ylabel('amount')
+    plt.savefig('logit_' + name + '.png')
+    plt.clf()
 
 def logit_liner():
     #Задаем исходные данные для линейного распределения
@@ -20,61 +46,36 @@ def logit_liner():
     X, Y, class0, class1 = dg.norm_dataset(mu, sigma, N)
     trainCount = round(0.7 * N * 2)
     Xtrain = X[0:trainCount]
-    Xtest = X[trainCount:N * 2 + 1]
+    Xtest = X[trainCount:N * 2]
     Ytrain = Y[0:trainCount]
-    Ytest = Y[trainCount:N * 2 + 1]
+    Ytest = Y[trainCount:N * 2]
 
     clf = LogisticRegression(random_state=4, solver='saga').fit(Xtrain, Ytrain)
-    Pred_test = clf.predict(Xtest)
-    Pred_train_proba = clf.predict_proba(Xtrain)
-    Pred_test_proba = clf.predict_proba(Xtest)
 
-    acc_train = clf.score(Xtrain, Ytrain)
-    acc_test = clf.score(Xtest, Ytest)
-
-    print(acc_train)
-    print(acc_test)
-
-    _ = plt.hist(Pred_train_proba[Ytrain,1], bins='auto', alpha=0.7)
-    _ = plt.hist(Pred_train_proba[~Ytrain,1], bins='auto', alpha=0.7)
-    plt.title('Histogram liner bad case TRAIN')
-    plt.xlabel('probability')
-    plt.ylabel('amount')
-    plt.savefig('logit_liner_bad_train.png')
-    plt.clf()
-
-    _ = plt.hist(Pred_test_proba[Ytest,1], bins='auto', alpha=0.7)
-    _ = plt.hist(Pred_test_proba[~Ytest,1], bins='auto', alpha=0.7)
-    plt.title('Histogram liner bad case TEST')
-    plt.xlabel('probability')
-    plt.ylabel('amount')
-    plt.savefig('logit_liner_bad_test.png')
-    plt.clf()
+    Pred = clf.predict(Xtest)
+    Pred_proba = clf.predict_proba(Xtest)
+    evaluate('liner_bad_test', Pred_proba, Pred, Ytest)
 
 
 
-def logit():
+
+
+def logit_nonliner():
     N = 1000
     SIGMA = 1
     X, Y, class0, class1 = dg.nonlinear_dataset_4(SIGMA, N)
 
     trainCount = round(0.7 * N * 2)
     Xtrain = X[0:trainCount]
-    Xtest = X[trainCount:N * 2 + 1]
+    Xtest = X[trainCount:N * 2]
     Ytrain = Y[0:trainCount]
-    Ytest = Y[trainCount:N * 2 + 1]
+    Ytest = Y[trainCount:N * 2]
 
-    clf = LogisticRegression(random_state=5, solver='saga').fit(Xtrain, Ytrain)
-    Pred_test = clf.predict(Xtest)
-    Pred_test_proba = clf.predict_proba(Xtest)
+    clf = LogisticRegression(random_state=4, solver='saga').fit(Xtrain, Ytrain)
 
-    acc_train = clf.score(Xtrain, Ytrain)
-    acc_test = clf.score(Xtest, Ytest)
-
-    _ = plt.hist(Pred_test_proba[Ytest,1], bins='auto', alpha=0.7)
-    _ = plt.hist(Pred_test_proba[~Ytest,1], bins='auto', alpha=0.7)
-    plt.savefig('logit.png')
-    plt.clf()
+    Pred = clf.predict(Xtest)
+    Pred_proba = clf.predict_proba(Xtest)
+    evaluate('liner_nonlinear_test', Pred_proba, Pred, Ytest)
 
 if __name__ == '__main__':
-    logit_liner()
+    logit_nonliner()
