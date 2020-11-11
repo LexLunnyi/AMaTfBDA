@@ -6,7 +6,8 @@ import DataGenerator as dg
 def generate():
     #Задаем исходные данные для линейного распределения
     mu_class_0 = [0, 2, 3]
-    mu_class_1 = [3, 5, 1]
+    #mu_class_1 = [3, 5, 1]
+    mu_class_1 = [4, 6, 0]
     mu = [mu_class_0, mu_class_1]
     sigma_class_0 = [2, 1, 2]
     sigma_class_1 = [1, 2, 1]
@@ -31,7 +32,7 @@ def generate():
         _ = plt.hist(class1[:, i], bins='auto', alpha=0.7)
         plt.title('Histogram feature ' + str(i+1))
         plt.xlabel('values')
-        plt.ylabel('count')
+        plt.ylabel('amount')
         plt.savefig('hist_f' + str(i + 1) + '.png')
         plt.clf()
     #Построим скаттерограммы распределения признаков для первых двух признаков
